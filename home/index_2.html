@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gsap initial dev</title>
+  <style>
+    body {
+    margin: 10px;
+    }
+    .box {
+    width: 50px;
+    height: 50px;
+    position: relative;
+    border-radius: 6px;
+    margin-top: 4px;
+    display: inline-block;
+    line-height: 50px;
+    text-align: center;
+    color: #333;
+    }
+    .orange {
+    background-color: #ffa500;
+    }
+    .green {
+    background-color: #00ff00;
+    }
+    .grey {
+    background-color: #ccc;
+    }
+    .pink {
+    background-color: pink;
+    }
+  </style>
+  <script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/16327/gsap-latest-beta.min.js"></script>
+</head>
+<div class="box box1 green"></div>
+<div class="box box2 orange"></div>
+<div class="box box3 pink"></div>
+<script>
+  let tl = gsap.timeline();
+  //sequenced one-after-the-other
+  tl.to(".box1", {duration: 2, x: 100}) //notice that there's no semicolon!
+  .to(".box2", {duration: 1, y: 200})
+  .to(".box3", {duration: 3, rotation: 360});
+</script>

@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gsap initial dev</title>
+  <style>
+    body {
+    background-color: black;
+    margin:0;
+    padding:0;
+    color:#ccc;
+    font-family: Signika Negative, sans-serif;
+    font-weight: 300;
+    font-size: 1.15em;
+    }
+    strong {
+    font-weight: 600;
+    color: white;
+    }
+    p {
+    padding: 0 20px 10px 20px;
+    margin-top: 0;
+    }
+    h1 {
+    color: white;
+    font-weight: normal;
+    padding: 10px 20px;
+    margin-bottom: 0;
+    clear:both;
+    }
+    h2 {
+    padding: 0;
+    margin: 0;
+    color: white;
+    font-weight: normal;
+    clear:both;
+    }
+    #container {
+    color: #555;
+    line-height: 0;
+    height: 550px;
+    overflow: hidden;
+    user-select:none;
+    -webkit-user-select:none;
+    pointer-events: none;
+    }
+    #container div {
+    display:inline-block;
+    position:relative;
+    width: 5px;
+    height: 5px;
+    border: 1px solid black;
+    background-color: blue;
+    }
+    button {
+    font-size: 20px;
+    padding: 10px;
+    }
+    pre {
+    overflow:auto;
+    border: 1px solid #444;
+    padding: 6px;
+    background-color: #000;
+    color: white;
+    }
+    code {
+    color: white;
+    font-size: 1.2em;
+    padding: 3px 3px;
+    }
+    form {
+    clear:both;
+    display:table;
+    width:100%;
+    height:100%;
+    }
+    a {
+    color: #71B200;
+    }
+    #controls {
+    display:table-row;
+    width: 100%;
+    background-color:#555;
+    background: linear-gradient(to bottom,  #777 0%,#444 100%);
+    padding:10px 10px 10px 5px;
+    z-index:1000;
+    }
+    #controls li {
+    display:table-cell;
+    padding:12px 8px 10px 8px;
+    vertical-align:middle;
+    text-shadow: 1px 1px 1px #000;
+    white-space: nowrap;
+    color: white;
+    }
+    #start {
+    color: black;
+    border-radius: 6px;
+    padding: 5px 18px;
+    border: 2px solid black;
+    background: #9af600;
+    background: linear-gradient(to bottom,  #9af600 0%,#71B200 100%);
+    cursor: pointer;
+    text-shadow: none;
+    font-weight: 400;
+    display:inline-block;
+    text-align: center;
+    }
+    #controls li span {
+    color: #ccc;
+    font-size:13px;
+    }
+    
+    
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/jquery.velocity/0.11.7/jquery.velocity.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.0.2/TweenMax.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.transit/0.9.9/jquery.transit.min.js"></script>
+  <link href="https://fonts.googleapis.com/css?family=Signika" rel="stylesheet" type="text/css">
+  <link href="//fonts.googleapis.com/css?family=Signika+Negative:300,400,600" rel="stylesheet" type="text/css">
+</head>
+<h1>Animation Engine Timing Comparison</h1>
+<p>This test helps illuminate how an engine handles timing, frame drops, and synchronization. A very common technique is to check pending tweens on each tick, find any that should have started (and haven&apos;t yet), and fire &apos;em off starting &quot;now&quot;. While that may help eliminate initial jumps caused by lags in the frame rate, it also prevents animations from staying in sync and can lead to clumping. GSAP, on the other hand, has always prioritized perfect synchronization and with the new lagSmoothing feature, it recovers from lags in the frame rate by adjusting a single value in the core timing mechanism (rather than shifting individual tweens independently).</p>
+<p>The test below lets you to create a staggered animation in which the boxes fall linearly 300px and the staggering should be uniform across them all. If you see odd spacing/clumping, it means the relative timing of the tweens changed (lost sync). Add/reduce boxes change the stress level.</p>
+<form>
+  <div id="controls">
+    <li style="padding-left:20px;">
+      <div>Boxes: 
+        <select id="boxes">
+          <option value="50">50</option>
+          <option value="100">100</option>
+          <option value="250">250</option>
+          <option value="500">500</option>
+          <option value="1000">1000</option>
+          <option value="2000" selected="">2000</option>
+          <option value="3000">3000</option>
+          <option value="4000">4000</option>
+          <option value="5000">5000</option>
+          <option value="6000">6000</option>
+        </select>
+      </div>
+      <div>stagger: 
+        <select id="stagger">
+          <option value="0">none</option>
+          <option value="0.001" selected="">slight (1ms)</option>
+          <option value="0.005">moderate (5ms)</option>
+          <option value="0.02">large (20ms)</option>
+        </select>
+      </div>
+    </li>
+    <li></li>
+    <li style="border-left:1px solid #333;">
+      <div>Engine: 
+        <select id="engine">
+          <option value="jquery">jQuery</option>
+          <option value="velocity">Velocity</option>
+          <option value="transit">transit</option>
+          <option value="gsap" selected="">GSAP</option>
+        </select>
+      </div>
+      <div>
+        <label>
+          <input id="lagSmoothing" type="checkbox" checked=""> lagSmoothing
+        </label>
+        <div style="display:inline-block; vertical-align:top;">
+          <div><span>threshold:</span>
+            <select id="threshold">
+              <option value="20">20</option>
+              <option value="50">50</option>
+              <option value="100">100</option>
+              <option value="200">200</option>
+              <option value="300">300</option>
+              <option value="500" selected="">500 (default)</option>
+              <option value="1000">1000</option>
+              <option value="0">none</option>
+            </select>
+          </div>
+          <div><span>adjustedLag:</span>
+            <select id="adjustedLag">
+              <option value="0">0</option>
+              <option value="16">16</option>
+              <option value="33" selected="">33 (default)</option>
+              <option value="50">50</option>
+              <option value="100">100</option>
+              <option value="200">200</option>
+              <option value="300">300</option>
+              <option value="500">500</option>
+              <option value="1000">1000</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </li>
+    <li style="border-left:1px solid #333;">
+      <div id="start">RUN TEST</div>
+    </li>
+    <li id="time" style="width:70%; color:#F90;"></li>
+  </div>
+</form>
+<div id="container"></div>
+<script>
+  var container = document.getElementById("container"),
+      boxes = [],
+      $boxes = [], //store jQuery objects for jQuery/Velocity/Transit because it's much faster than running the selector when the test starts
+      $lagSmoothing = $("#lagSmoothing"),
+      $threshold = $("#threshold"),
+      $adjustedLag = $("#adjustedLag"), 
+      isFirefox = (navigator.userAgent.indexOf("Firefox") !== -1), 
+      currentEngine;
+  
+  if (isFirefox) {
+  $("#boxes")[0].selectedIndex = 2; //Firefox is significantly slower, so we'll adjust the default number of boxes.
+  }
+  function createBoxes() {
+  var i = parseInt($("#boxes").val(), 10),
+      div;
+  container.innerHTML = "";
+  boxes.length = $boxes.length = 0;
+  while (--i > -1) {
+      div = document.createElement("div");
+      div.setAttribute("id", "div" + i);
+      container.appendChild(div);
+      boxes.push(div);
+      $boxes.push($(div));
+  }
+  }
+  
+  createBoxes();
+  
+  $("#start").click(function() {
+  var threshold = $lagSmoothing.prop("checked") ? parseInt($("#threshold").val(), 10) : 0;
+  TweenLite.set(boxes, {y:0, top:0, force3D:"auto", overwrite:true}); 
+  if (currentEngine && currentEngine !== "gsap") {
+      $("#container div").stop(true).velocity("stop", true).velocity({translateY:0}, {duration:0}); //we need to make sure Velocity resets its cache of the transform value(s)
+  }
+  currentEngine = $("#engine").val();
+  TweenLite.set("#start", {opacity:0.5});
+  TweenLite.ticker.lagSmoothing( threshold, parseInt($adjustedLag.val(), 10) );
+  setTimeout(runTest, 10); //wait for a moment just so that the browser renders the changes to the button and text before the CPU-intensive test runs.
+  });
+  
+  function runTest() {
+  var i = boxes.length,
+      stagger = parseFloat($("#stagger").val()),
+      num = 0;
+  if (currentEngine === "velocity") {
+      while (--i > -1) {
+      $boxes[i].velocity({translateY:300, translateZ:0}, {duration:2000, easing:"linear", delay:++num * stagger * 1000});
+      }
+  } else if (currentEngine === "jquery") {
+      while (--i > -1) {
+      //note: jQuery can't animate transforms, so we use "top" instead.
+      $boxes[i].delay(++num * stagger * 1000).animate({top:300}, {duration:2000, easing:"linear"});
+      }
+  } else if (currentEngine === "transit") {
+      while (--i > -1) {
+      $boxes[i].transition({y:"300px", delay:++num * stagger * 1000}, 2000, "linear");
+      }
+  } else {
+      while (--i > -1) {
+      TweenLite.to(boxes[i], 2, {y:300, overwrite:true, ease:Linear.easeNone, delay:++num * stagger});
+      }
+  }
+  TweenLite.set("#start", {opacity:1, delay:0.2});
+  
+  //after 4 seconds, move them back to the top to reset. Turn off force3D at that point to free up memory on mobile devices.
+  if (currentEngine !== "gsap") {
+      $("#container div").velocity({translateY:0, top:0}, {delay:4000, duration:1});
+  } else {
+      TweenLite.set(boxes, {y:0, delay:boxes.length * stagger + 4});
+  }
+  }
+  
+  $("#boxes").change(createBoxes);
+  $("#engine").change(function() {
+  var enabled = ($("#engine").val() === "gsap");
+  $lagSmoothing.prop("disabled", !enabled);
+  if (!enabled || $lagSmoothing.prop("checked")) {
+      $threshold.prop("disabled", !enabled);
+      $adjustedLag.prop("disabled", !enabled);
+  }
+  });
+  $lagSmoothing.change(function() {
+  var disabled = !$lagSmoothing.prop("checked");
+  $threshold.prop("disabled", disabled);
+  $adjustedLag.prop("disabled", disabled);
+  });
+</script>
