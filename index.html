@@ -5,11 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Gsap initial dev</title>
   <style>
+    @font-face { font-family: CharterOak; src: url('../fonts/CharterOak-Normal.otf'); }
     * {
     box-sizing: border-box;
     }
     body {
-    background: black;
+    background-color: #222222;
     padding: 0;
     margin: 0;
     font-family: 'Istok Web', sans-serif;
@@ -18,12 +19,25 @@
     overflow: hidden;
     }
     .container {
-    display: flex;
-    height: 100%;
-    width: 100%;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
+        display: flex;
+        height: 100vh;
+        width: 100%;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+    }
+    .container .row {
+        display: flex;
+        height: 50vh;
+        width: 100%;
+        justify-content: center;
+        align-items: flex-end;
+        overflow: hidden;
+    }
+    .container .row:nth-child(2) {
+        
+        align-items: flex-start;
     }
     .container.grid, .container.columns {
     align-content: stretch;
@@ -31,6 +45,7 @@
     flex-wrap: wrap;
     }
     .letter {
+    font-family: 'Audiowide', cursive;
     text-align: center;
     color: black;
     font-size: 10vmax;
@@ -48,6 +63,7 @@
     }
     .get, .clean, .car {
     font-size: 5vmax;
+    font-family: CharterOak;
     color: white;
     }
     .get {
@@ -55,32 +71,34 @@
     font-weight: 300;
     display: none;
     }
-    .clean, .car {
+    .clean {
     padding: 2px 0;
     font-weight: 600;
     display: none;
     }
+    .car {
+        color: #f7ca18;
+        text-align: center;
+    }
+    
     
     .container.final .get,
-    .container.final .car,
     .container.final .clean {
-    display: block;
+        display: block;
     }
-    .e {
-    background: rgba(0, 188, 212, 0.7);
+    .container.final .car {
+        display: none;
     }
-    .x {
-    background: rgba(40, 150, 255, 0.7);
-    }
-    .t {
-    background: rgba(153, 80, 220, 0.7);
-    }
-    .r, .m {
-    background: rgba(90, 108, 225, 0.7);
+    .e,
+    .x,
+    .t,
+    .r,
+    .m {
+    background: #f7ca18;
     }
     .container.plain .letter {
     background: transparent;
-    color: white;
+    color: #b200fd;
     padding: 0;
     }
     .logo {
@@ -94,18 +112,23 @@
   <script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/16327/Flip.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-  <link href="https://fonts.googleapis.com/css2?family=Istok+Web:ital,wght@1,700&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Audiowide&amp;family=Istok+Web:ital,wght@1,700&amp;display=swap" rel="stylesheet">
 </head>
 <div class="container final">
-  <div class="get">Get the</div>
-  <div class="letter e">E</div>
-  <div class="letter x">X</div>
-  <div class="letter t">T</div>
-  <div class="letter r">R</div>
-  <div class="letter e">E</div>
-  <div class="letter m">M</div>
-  <div class="letter e">E</div>
-  <div class="clean">Clean</div>
+  <div class="row">
+    <div class="get">Get the</div>
+    <div class="letter e">E</div>
+    <div class="letter x">X</div>
+    <div class="letter t">T</div>
+    <div class="letter r">R</div>
+    <div class="letter e">E</div>
+    <div class="letter m">M</div>
+    <div class="letter e">E</div>
+    <div class="clean">Clean</div>
+  </div>
+  <div class="row">
+    <div class="car">Car Cleaning</div>
+  </div>
 </div>
 <script>
   gsap.registerPlugin(Flip);
