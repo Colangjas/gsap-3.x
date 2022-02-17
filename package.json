@@ -1,0 +1,20 @@
+{
+  "name": "gsap-3.x",
+  "version": "1.0.0",
+  "description": "GSAP documentation and examples",
+  "main": "index.js",
+  "scripts": {
+    "dev": "pug -w ./src -o ./ -P",
+    "pug": "npm i -g pug"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Colangjas/gsap-3.x.git"
+  },
+  "author": "Colin Thompson",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Colangjas/gsap-3.x/issues"
+  },
+  "homepage": "https://github.com/Colangjas/gsap-3.x#readme"
+}

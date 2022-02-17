@@ -8,11 +8,12 @@
     * {
     box-sizing: border-box;
     }
+    
     body {
     background: black;
     padding: 0;
     margin: 0;
-    font-family: 'Istok Web', sans-serif;
+    font-family: "Signika Negative", sans-serif, Arial;
     font-weight: 300;
     height: 100vh;
     overflow: hidden;
@@ -30,6 +31,7 @@
     align-items: stretch;
     flex-wrap: wrap;
     }
+    
     .letter {
     text-align: center;
     color: black;
@@ -46,36 +48,33 @@
     .container.columns .letter {
     flex-basis: 25%;
     }
-    .get, .clean, .car {
+    .for, .gsap {
     font-size: 5vmax;
     color: white;
     }
-    .get {
+    .for {
     padding: 2px 1.6vmax;
     font-weight: 300;
     display: none;
     }
-    .clean, .car {
+    .gsap {
     padding: 2px 0;
     font-weight: 600;
     display: none;
     }
-    
-    .container.final .get,
-    .container.final .car,
-    .container.final .clean {
+    .container.final .for, .container.final .gsap {
     display: block;
     }
-    .e {
+    .F {
     background: rgba(0, 188, 212, 0.7);
     }
-    .x {
+    .l {
     background: rgba(40, 150, 255, 0.7);
     }
-    .t {
+    .i {
     background: rgba(153, 80, 220, 0.7);
     }
-    .r, .m {
+    .p {
     background: rgba(90, 108, 225, 0.7);
     }
     .container.plain .letter {
@@ -83,51 +82,57 @@
     color: white;
     padding: 0;
     }
+    
     .logo {
     position: fixed;
     width: 60px;
     bottom: 20px;
     right: 30px;
     }
+    
+    
+    
   </style>
   <script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/16327/gsap-latest-beta.min.js"></script>
   <script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/16327/Flip.min.js"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-  <link href="https://fonts.googleapis.com/css2?family=Istok+Web:ital,wght@1,700&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Signika" rel="stylesheet" type="text/css">
+  <link href="//fonts.googleapis.com/css?family=Signika+Negative:300,400,600" rel="stylesheet" type="text/css">
 </head>
 <div class="container final">
-  <div class="get">Get the</div>
-  <div class="letter e">E</div>
-  <div class="letter x">X</div>
-  <div class="letter t">T</div>
-  <div class="letter r">R</div>
-  <div class="letter e">E</div>
-  <div class="letter m">M</div>
-  <div class="letter e">E</div>
-  <div class="clean">Clean</div>
-</div>
+  <div class="letter F">F</div>
+  <div class="letter l">l</div>
+  <div class="letter i">i</div>
+  <div class="letter p">p</div>
+  <div class="for">for</div>
+  <div class="gsap">GSAP</div>
+</div><a href="https://greensock.com/"><img class="logo" src="https://assets.codepen.io/16327/hero-logo.svg"></a>
 <script>
   gsap.registerPlugin(Flip);
-  let layouts = ["final", "plain"],
-  container = document.querySelector(".container"),
-  curLayout = 0; // index of the current layout
+  
+  let layouts = ["final", "plain", "columns", "grid"],
+          container = document.querySelector(".container"),
+          curLayout = 0; // index of the current layout
+  
   function nextState() {
-  const state = Flip.getState(".letter, .get, .clean, .car", {props: "color,backgroundColor", simple: true}); // capture current state
+  const state = Flip.getState(".letter, .for, .gsap", {props: "color,backgroundColor", simple: true}); // capture current state
+  
   container.classList.remove(layouts[curLayout]); // remove old class
   curLayout = (curLayout + 1) % layouts.length;   // increment (loop back to the start if at the end)
   container.classList.add(layouts[curLayout]);    // add the new class
+  
   Flip.from(state, { // animate from the previous state
-  absolute: true,
-  stagger: 0.07,
-  duration: 0.7,
-  ease: "power2.inOut",
-  spin: curLayout === 0, // only spin when going to the "final" layout
-  simple: true,
-  onEnter: (elements, animation) => gsap.fromTo(elements, {opacity: 0}, {opacity: 1, delay: animation.duration() - 0.1}),
-  onLeave: elements => gsap.to(elements, {opacity: 0})
+      absolute: true,
+      stagger: 0.07,
+      duration: 0.7,
+      ease: "power2.inOut",
+      spin: curLayout === 0, // only spin when going to the "final" layout
+      simple: true,
+      onEnter: (elements, animation) => gsap.fromTo(elements, {opacity: 0}, {opacity: 1, delay: animation.duration() - 0.1}),
+      onLeave: elements => gsap.to(elements, {opacity: 0})
   });
+  
   gsap.delayedCall(curLayout === 0 ? 3.5 : 1.5, nextState);
   }
+  
   gsap.delayedCall(1, nextState);
 </script>
