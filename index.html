@@ -124,6 +124,7 @@
     <div class="letter e">E</div>
     <div class="letter m">M</div>
     <div class="letter e">E</div>
+    <div class="letter wheel"><img src="/img/wheel.svg" alt="" style="width: 10vmax; height: auto;"></div>
     <div class="clean">Clean</div>
   </div>
   <div class="row">
@@ -132,7 +133,7 @@
 </div>
 <script>
   gsap.registerPlugin(Flip);
-  let layouts = ["final", "plain"],
+  let layouts = ["plain", "final"],
   container = document.querySelector(".container"),
   curLayout = 0; // index of the current layout
   function nextState() {
